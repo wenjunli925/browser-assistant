@@ -2,11 +2,12 @@ from dotenv import load_dotenv
 import os
 import speech_recognition as sr
 import openai
+from openai import OpenAI
 import pyttsx3
 
 load_dotenv() 
 
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 engine = pyttsx3.init()
 
@@ -28,12 +29,14 @@ def listen():
         return None
 
 def chat_with_gpt(prompt):
-    response = openai.ChatCompletion.create(
-        model="gpt-3.5-turbo", 
-        messages=[{"role": "user", "content": prompt}]
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "user", "content": prompt}
+        ]
     )
     reply = response.choices[0].message.content.strip()
-    print(f"GPT: {reply}")
+    print(f"🤖 GPT: {reply}")
     return reply
 
 # Main loop
